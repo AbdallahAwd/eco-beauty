@@ -5,54 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-
-const categories = [
-  {
-    name: "Skincare",
-    image:
-      "https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp",
-    description: "Nourish your skin with organic, cruelty-free ingredients.",
-    cta: "Shop Skincare",
-    link: "/shop/skincare",
-  },
-  {
-    name: "Haircare",
-    image: "/placeholder.svg",
-    description:
-      "Enhance your hair's natural beauty with sulfate-free, organic products.",
-    cta: "Shop Haircare",
-    link: "/shop/haircare",
-  },
-  {
-    name: "Body Care",
-    image: "/placeholder.svg",
-    description: "Pamper your body with all-natural body care essentials.",
-    cta: "Shop Body Care",
-    link: "/shop/body-care",
-  },
-  {
-    name: "Makeup",
-    image: "/placeholder.svg",
-    description: "Discover vibrant, toxin-free makeup for a flawless finish.",
-    cta: "Shop Makeup",
-    link: "/shop/makeup",
-  },
-  {
-    name: "Fragrances",
-    image: "/placeholder.svg",
-    description:
-      "Embrace natural scents with our exclusive range of organic fragrances.",
-    cta: "Shop Fragrances",
-    link: "/shop/fragrances",
-  },
-  {
-    name: "Wellness & Supplements",
-    image: "/placeholder.svg",
-    description: "Boost your inner beauty with our range of wellness products.",
-    cta: "Shop Wellness",
-    link: "/shop/wellness",
-  },
-];
+import { categories } from "@/lib/static/products";
 
 export function CategoriesSection() {
   return (

@@ -19,11 +19,20 @@ export function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // State to handle search input visibility
-  const searchRef = useRef(null); // To track clicks outside
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
-    // Dynamically filter suggestions based on search term
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
     if (searchTerm.length > 0) {
       setSuggestions(
         mockSuggestions.filter((suggestion) =>
@@ -38,20 +47,20 @@ export function Header() {
   }, [searchTerm]);
 
   const handleSuggestionClick = (suggestion) => {
-    setSearchTerm(suggestion); // Auto-fill the search bar
-    setShowSuggestions(false); // Close suggestions after selection
+    setSearchTerm(suggestion);
+    setShowSuggestions(false);
   };
 
   const handleClickOutside = (event) => {
     if (searchRef.current && !searchRef.current.contains(event.target)) {
-      setShowSuggestions(false); // Close suggestions if clicked outside
+      setShowSuggestions(false);
     }
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
-      setShowSuggestions(false); // Close suggestions on pressing Escape
-      setIsSearchOpen(false); // Close the search input on mobile as well
+      setShowSuggestions(false);
+      setIsSearchOpen(false);
     }
   };
 
@@ -64,9 +73,11 @@ export function Header() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-sm transition-all duration-300">
+    <header
+      className={`fixed top-0 z-50 w-full transition-all duration-300
+        ${isScrolled ? "bg-white/75 backdrop-blur-lg shadow-md" : "bg-white"}`}
+    >
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-2">

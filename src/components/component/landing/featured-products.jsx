@@ -1,73 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { Star, ShoppingCart, Eye, Badge, Check, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { ProductCard } from "./product-card";
+
+import { products } from "@/lib/static/products";
+import { ProductCard } from "./product";
 // Sample product data
-const products = [
-  {
-    id: 1,
-    name: "Organic Rose Facial Serum",
-    description: "Nourishing organic face serum for radiant skin",
-    price: 49.99,
-    originalPrice: 59.99,
-    rating: 4.8,
-    reviews: 120,
-    image: "/placeholder.svg",
-    hoverImage: "/placeholder.svg",
-    badge: "Bestseller",
-    inStock: true,
-  },
-  {
-    id: 2,
-    name: "Lavender Dream Night Cream",
-    description: "Soothing night cream for rejuvenated skin",
-    price: 39.99,
-    rating: 4.6,
-    reviews: 85,
-    image: "/placeholder.svg",
-    hoverImage: "/placeholder.svg",
-    badge: "New",
-    inStock: true,
-  },
-  {
-    id: 3,
-    name: "Citrus Burst Body Lotion",
-    description: "Refreshing body lotion for all-day hydration",
-    price: 29.99,
-    rating: 4.7,
-    reviews: 150,
-    image: "/placeholder.svg",
-    hoverImage: "/placeholder.svg",
-    inStock: false,
-  },
-  {
-    id: 4,
-    name: "Green Tea Cleansing Gel",
-    description: "Gentle cleansing gel for a fresh start",
-    price: 24.99,
-    originalPrice: 29.99,
-    rating: 4.5,
-    reviews: 95,
-    image: "/placeholder.svg",
-    hoverImage:
-      "https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp",
-    badge: "Limited Edition",
-    inStock: true,
-    discount: 10,
-  },
-];
 
 export function FeaturedProducts({ category = "Featured Products" }) {
   return (

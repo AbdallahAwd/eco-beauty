@@ -3,7 +3,7 @@
 import Footer from "./footer";
 import { Header } from "./header";
 
-import BottomNavBar from "../navbar";
+import BottomNavBar from "./navbar";
 
 export default function LayoutWrapper({
   children,
