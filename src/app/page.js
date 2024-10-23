@@ -1,6 +1,30 @@
 import LayoutWrapper from "@/components/component/layout-wrapper";
-import Image from "next/image";
+import { HeroSlider } from "@/components/component/landing/hero-slider";
+import { FeaturedProducts } from "@/components/component/landing/featured-products";
+import { CategoriesSection } from "@/components/component/landing/categories-section";
+import { TestimonialsSlider } from "@/components/component/landing/testimonials-slider";
+import { NewsletterSignup } from "@/components/component/landing/newsletter-signup";
 
 export default function Home() {
-  return <LayoutWrapper></LayoutWrapper>;
+  const categories = [
+    "Skincare",
+    "Haircare",
+    "Body Care",
+    "Makeup",
+    "Fragrance",
+    "Nails",
+    "Tools",
+  ];
+  return (
+    <LayoutWrapper>
+      <HeroSlider />
+      <FeaturedProducts />
+      <CategoriesSection />
+      {categories.map((category, index) => (
+        <FeaturedProducts key={index} category={category} />
+      ))}
+      <TestimonialsSlider />
+      <NewsletterSignup />
+    </LayoutWrapper>
+  );
 }

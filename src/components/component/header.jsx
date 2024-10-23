@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Search, User, ShoppingCart, Heart } from "lucide-react";
+import { Search, User, ShoppingCart, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const mockSuggestions = [
@@ -19,6 +19,7 @@ export function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // State to handle search input visibility
   const searchRef = useRef(null); // To track clicks outside
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export function Header() {
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setShowSuggestions(false); // Close suggestions on pressing Escape
+      setIsSearchOpen(false); // Close the search input on mobile as well
     }
   };
 
@@ -73,8 +75,23 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Centered Search Bar */}
-        <div className="flex-grow flex justify-center" ref={searchRef}>
+        {/* Mobile Search Icon */}
+        <div className="flex md:hidden items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+          >
+            <Search className="h-5 w-5" />
+            <span className="sr-only">Search</span>
+          </Button>
+        </div>
+
+        {/* Desktop Search Bar */}
+        <div
+          className="hidden md:flex-grow md:flex justify-center"
+          ref={searchRef}
+        >
           <div className="relative w-1/2">
             <input
               type="text"
@@ -114,7 +131,7 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="hidden md:flex  items-center space-x-4">
           <Button variant="ghost" size="icon">
             <User className="h-5 w-5" />
             <span className="sr-only">Account</span>
@@ -126,12 +143,56 @@ export function Header() {
           <Button variant="ghost" size="icon" className="relative">
             <ShoppingCart className="h-5 w-5" />
             <span className="sr-only">Cart</span>
-            <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-green-500 text-xs text-white flex items-center justify-center">
+            <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-base-500 text-xs text-white bg-base-600 flex items-center justify-center">
               3
             </span>
           </Button>
         </div>
       </div>
+
+      {/* Mobile Search Input */}
+      {isSearchOpen && (
+        <div className="md:hidden bg-white w-full p-4 transition-all duration-300 ease-in-out">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              onClick={() => setIsSearchOpen(false)} // Close search when clicked
+            >
+              <X className="h-5 w-5" />
+              <span className="sr-only">Close Search</span>
+            </Button>
+
+            {/* Search Suggestions */}
+            {showSuggestions && suggestions.length > 0 && (
+              <ul
+                className="absolute top-12 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+                role="listbox"
+              >
+                {suggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    role="option"
+                    aria-selected={false}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
