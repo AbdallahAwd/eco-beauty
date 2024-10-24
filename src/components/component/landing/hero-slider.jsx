@@ -95,7 +95,7 @@ export function HeroSlider() {
             </h2>
             <Button
               size="lg"
-              className="mb-4 bg-green-600 hover:bg-green-700 text-white"
+              className="mb-4 bg-base-600 hover:bg-green-700 text-white"
             >
               {slide.cta}
             </Button>

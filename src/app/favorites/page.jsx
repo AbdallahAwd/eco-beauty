@@ -1,10 +1,10 @@
-import { CategoryPage } from "@/components/component/categories/category-page";
+import { FavoritesPage } from "@/components/component/cart/favorites-page";
 import LayoutWrapper from "@/components/component/layout-wrapper";
 
 export default function Category() {
   return (
     <LayoutWrapper>
-      <CategoryPage />
+      <FavoritesPage />
     </LayoutWrapper>
   );
 }

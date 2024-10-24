@@ -1,10 +1,10 @@
-import { CategoryPage } from "@/components/component/categories/category-page";
+import AccountPage from "@/components/component/account/account-page";
 import LayoutWrapper from "@/components/component/layout-wrapper";
 
 export default function Category() {
   return (
     <LayoutWrapper>
-      <CategoryPage />
+      <AccountPage />
     </LayoutWrapper>
   );
 }

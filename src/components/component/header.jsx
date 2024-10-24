@@ -2,8 +2,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, User, ShoppingCart, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const mockSuggestions = [
   "Organic Skincare",
@@ -15,14 +22,27 @@ const mockSuggestions = [
   "Green Beauty",
 ];
 
+// Mock cart items
+const mockCartItems = [
+  {
+    id: 1,
+    name: "Organic Face Cream",
+    price: 24.99,
+    image: "/placeholder.svg",
+  },
+  { id: 2, name: "Natural Shampoo", price: 15.99, image: "/placeholder.svg" },
+  { id: 3, name: "Vegan Lipstick", price: 19.99, image: "/placeholder.svg" },
+];
+
 export function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartItems, setCartItems] = useState(mockCartItems);
   const searchRef = useRef(null);
-
+  const router = useRouter();
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -73,6 +93,7 @@ export function Header() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300
@@ -82,7 +103,7 @@ export function Header() {
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-2">
             <Logo />
-            <span className="text-xl font-bold text-green-800">EcoBeauty</span>
+            <span className="text-xl font-bold text-base-800">EcoBeauty</span>
           </Link>
         </div>
 
@@ -109,7 +130,7 @@ export function Header() {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-base-600 focus:border-transparent"
             />
             <Button
               variant="ghost"
@@ -142,25 +163,39 @@ export function Header() {
           </div>
         </div>
 
-        <div className="hidden md:flex  items-center space-x-4">
-          <Button variant="ghost" size="icon">
+        <div className="hidden md:flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/account")}
+          >
             <User className="h-5 w-5" />
             <span className="sr-only">Account</span>
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/favorites")}
+          >
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
           </Button>
-          <Button variant="ghost" size="icon" className="relative">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Cart</span>
-            <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-base-500 text-xs text-white bg-base-600 flex items-center justify-center">
-              3
-            </span>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">Cart</span>
+                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-base-500 text-xs text-white bg-base-600 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <CartDropdown items={cartItems} />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
-
       {/* Mobile Search Input */}
       {isSearchOpen && (
         <div className="md:hidden bg-white w-full p-4 transition-all duration-300 ease-in-out">
@@ -170,13 +205,13 @@ export function Header() {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-base-600 focus:border-transparent"
             />
             <Button
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 transform -translate-y-1/2"
-              onClick={() => setIsSearchOpen(false)} // Close search when clicked
+              onClick={() => setIsSearchOpen(false)}
             >
               <X className="h-5 w-5" />
               <span className="sr-only">Close Search</span>
@@ -218,9 +253,57 @@ function Logo() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-8 w-8 text-green-600"
+      className="h-8 w-8 text-base-600"
     >
       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
     </svg>
+  );
+}
+
+function CartDropdown({ items }) {
+  const total = items.reduce((sum, item) => sum + item.price, 0);
+  const router = useRouter();
+
+  return (
+    <div className="p-4">
+      <h3 className="text-lg font-semibold mb-4">Your Cart</h3>
+      {items.length === 0 ? (
+        <p className="text-gray-500">Your cart is empty</p>
+      ) : (
+        <>
+          <ul className="space-y-4">
+            {items.map((item) => (
+              <li key={item.id} className="flex items-center space-x-4">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={40}
+                  height={40}
+                  className="rounded"
+                />
+                <div className="flex-grow">
+                  <h4 className="text-sm font-medium">{item.name}</h4>
+                  <p className="text-sm text-gray-500">
+                    ${item.price.toFixed(2)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold">Total:</span>
+              <span className="font-semibold">${total.toFixed(2)}</span>
+            </div>
+            <Button
+              className="w-full mt-4 bg-base-600 hover:bg-base-800"
+              onClick={() => router.push("/cart")}
+            >
+              View Cart
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

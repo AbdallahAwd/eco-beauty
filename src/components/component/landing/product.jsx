@@ -63,7 +63,7 @@ export function ProductCard({ product }) {
               disabled={!product.inStock || isAddedToCart}
             >
               {isAddedToCart ? (
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-base-600" />
               ) : (
                 <Plus className="h-4 w-4" />
               )}
@@ -137,7 +137,7 @@ export function ProductCard({ product }) {
               </span>
             </div>
             {product.discount && (
-              <Badge variant="outline" className="text-green-600 text-xs">
+              <Badge variant="outline" className="text-base-600 text-xs">
                 {product.discount}% OFF
               </Badge>
             )}

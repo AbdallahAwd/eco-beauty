@@ -34,8 +34,8 @@ export default function BottomNavBar() {
         <NavItem
           label="Favorites"
           icon={<Heart className="w-6 h-6" />}
-          isActive={isPathActive("/whishlist")}
-          href="/whishlist"
+          isActive={isPathActive("/favorites")}
+          href="/favorites"
         />
         <NavItem
           label="Account"
