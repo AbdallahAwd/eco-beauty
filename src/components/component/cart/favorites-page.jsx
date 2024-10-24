@@ -242,7 +242,7 @@ export function FavoritesPage() {
                 Your favorites list is empty!
               </p>
               <Button asChild className="bg-base-600">
-                <Link href="/shop">Continue Shopping</Link>
+                <Link href="/">Continue Shopping</Link>
               </Button>
             </div>
           )}

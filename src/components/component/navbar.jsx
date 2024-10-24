@@ -3,6 +3,7 @@
 import { Factory, Grid, Heart, Home, ShoppingCart, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LoginDialog } from "./auth/login-dialog";
 
 // This is the main BottomNavBar component
 export default function BottomNavBar() {
@@ -37,12 +38,14 @@ export default function BottomNavBar() {
           isActive={isPathActive("/favorites")}
           href="/favorites"
         />
+
         <NavItem
           label="Account"
           icon={<User className="w-6 h-6" />}
           isActive={isPathActive("/account")}
           href="/account"
         />
+
         <NavItem
           label="Cart"
           icon={<ShoppingCart className="w-6 h-6" />}
@@ -56,13 +59,14 @@ export default function BottomNavBar() {
 }
 
 // NavItem component to be used inside BottomNavBar
-function NavItem({ label, icon, isActive, href, badgeCount }) {
+function NavItem({ label, icon, isActive, href, badgeCount, onClick }) {
   return (
     <Link
       href={href}
       className={`flex flex-col items-center justify-center min-w-[4rem] relative ${
         isActive ? "text-base-600" : "text-gray-600"
       }`}
+      onClick={onClick}
     >
       <div className="relative">
         {icon}

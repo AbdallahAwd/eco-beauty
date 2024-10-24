@@ -19,6 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ProductCard } from "../landing/product";
 import { products } from "@/lib/static/products";
+import { useRouter } from "next/navigation";
 
 // Mock data for cart items
 const initialCartItems = [
@@ -44,7 +45,7 @@ export function CartPage() {
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
-
+  const router = useRouter();
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -210,6 +211,7 @@ export function CartPage() {
                 <Button
                   className="w-full mt-4 bg-base-600 hover:bg-base-800"
                   size="lg"
+                  onClick={() => router.push("/cart/checkout")}
                 >
                   Proceed to Checkout
                 </Button>
