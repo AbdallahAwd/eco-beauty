@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 import { products } from "@/lib/static/products";
-import { ProductCard } from "./product";
+import { ProductCard } from "../product/product";
 // Sample product data
 
 export function FeaturedProducts({ category = "Featured Products" }) {

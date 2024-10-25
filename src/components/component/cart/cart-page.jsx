@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ProductCard } from "../landing/product";
+import { ProductCard } from "../product/product";
 import { products } from "@/lib/static/products";
 import { useRouter } from "next/navigation";
 

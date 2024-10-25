@@ -33,7 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { products } from "@/lib/static/products";
 
-import { ProductCard } from "../landing/product";
+import { ProductCard } from "../product/product";
 
 export function CategoryPage() {
   const [sortBy, setSortBy] = useState("popularity");

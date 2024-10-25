@@ -8,16 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
-
+  const router = useRouter();
   const handleAddToCart = () => {
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 2000);
     // Add to cart logic here
+  };
+
+  const handleQuickView = () => {
+    setIsHovered(true);
+    router.push(`/product/${product.id}`);
   };
 
   const handleWishlist = () => {
@@ -107,7 +113,12 @@ export function ProductCard({ product }) {
                 exit={{ opacity: 0 }}
                 className="hidden md:flex absolute inset-0 bg-black bg-opacity-40 items-center justify-center"
               >
-                <Button variant="secondary" size="sm" className="mr-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="mr-2"
+                  onClick={handleQuickView}
+                >
                   <Eye className="w-4 h-4 mr-2" />
                   Quick View
                 </Button>
