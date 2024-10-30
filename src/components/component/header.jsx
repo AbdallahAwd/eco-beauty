@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, ShoppingCart, Heart, X } from "lucide-react";
+import { Search, User, ShoppingCart, Heart, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
@@ -22,7 +22,6 @@ const mockSuggestions = [
   "Green Beauty",
 ];
 
-// Mock cart items
 const mockCartItems = [
   {
     id: 1,
@@ -40,9 +39,13 @@ export function Header() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartItems, setCartItems] = useState(mockCartItems);
+  const [cartItems] = useState(mockCartItems);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
   const searchRef = useRef(null);
+  const mobileSearchInputRef = useRef(null);
   const router = useRouter();
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -60,6 +63,7 @@ export function Header() {
         )
       );
       setShowSuggestions(true);
+      setSelectedSuggestionIndex(-1);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
@@ -69,6 +73,7 @@ export function Header() {
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
+    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
   };
 
   const handleClickOutside = (event) => {
@@ -81,7 +86,34 @@ export function Header() {
     if (event.key === "Escape") {
       setShowSuggestions(false);
       setIsSearchOpen(false);
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) =>
+        Math.min(prevIndex + 1, suggestions.length - 1)
+      );
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) => Math.max(prevIndex - 1, -1));
+    } else if (event.key === "Enter") {
+      if (selectedSuggestionIndex >= 0) {
+        handleSuggestionClick(suggestions[selectedSuggestionIndex]);
+      } else {
+        handleSearch();
+      }
     }
+  };
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 100);
   };
 
   useEffect(() => {
@@ -92,7 +124,17 @@ export function Header() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [suggestions, selectedSuggestionIndex]);
+
+  // Focus the mobile search input when search is opened
+  const handleSearchIconClick = () => {
+    setIsSearchOpen(true);
+    setTimeout(() => {
+      if (mobileSearchInputRef.current) {
+        mobileSearchInputRef.current.focus();
+      }
+    }, 100); // Small delay to ensure the input is visible before focusing
+  };
 
   return (
     <header
@@ -112,7 +154,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            onClick={handleSearchIconClick} // Open search and focus input
           >
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
@@ -130,12 +172,15 @@ export function Header() {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-base-600 focus:border-transparent"
             />
             <Button
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              onClick={handleSearch}
             >
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
@@ -144,16 +189,18 @@ export function Header() {
             {/* Search Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
               <ul
-                className="absolute top-12 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+                className="absolute top-12 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-auto"
                 role="listbox"
               >
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
-                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    className={`px-4 py-2 hover:bg-gray-200 cursor-pointer ${
+                      index === selectedSuggestionIndex ? "bg-gray-200" : ""
+                    }`}
+                    onMouseDown={() => handleSuggestionClick(suggestion)}
                     role="option"
-                    aria-selected={false}
+                    aria-selected={index === selectedSuggestionIndex}
                   >
                     {suggestion}
                   </li>
@@ -196,40 +243,48 @@ export function Header() {
           </Popover>
         </div>
       </div>
+
       {/* Mobile Search Input */}
       {isSearchOpen && (
         <div className="md:hidden bg-white w-full p-4 transition-all duration-300 ease-in-out">
           <div className="relative">
             <input
+              ref={mobileSearchInputRef} // Set the ref for mobile input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-base-600 focus:border-transparent"
             />
             <Button
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 transform -translate-y-1/2"
-              onClick={() => setIsSearchOpen(false)}
+              onClick={() => {
+                setIsSearchOpen(false);
+              }}
             >
-              <X className="h-5 w-5" />
+              <XCircle className="h-5 w-5" />
               <span className="sr-only">Close Search</span>
             </Button>
 
-            {/* Search Suggestions */}
+            {/* Mobile Search Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
               <ul
-                className="absolute top-12 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+                className="absolute top-12 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-auto"
                 role="listbox"
               >
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
-                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    className={`px-4 py-2 hover:bg-gray-200 cursor-pointer ${
+                      index === selectedSuggestionIndex ? "bg-gray-200" : ""
+                    }`}
+                    onMouseDown={() => handleSuggestionClick(suggestion)}
                     role="option"
-                    aria-selected={false}
+                    aria-selected={index === selectedSuggestionIndex}
                   >
                     {suggestion}
                   </li>
@@ -268,7 +323,7 @@ function CartDropdown({ items }) {
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-4">Your Cart</h3>
       {items.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty</p>
+        <p>Your cart is empty</p>
       ) : (
         <>
           <ul className="space-y-4">
@@ -283,9 +338,7 @@ function CartDropdown({ items }) {
                 />
                 <div className="flex-grow">
                   <h4 className="text-sm font-medium">{item.name}</h4>
-                  <p className="text-sm text-gray-500">
-                    ${item.price.toFixed(2)}
-                  </p>
+                  <p className="text-sm text-gray-500">${item.price}</p>
                 </div>
               </li>
             ))}
