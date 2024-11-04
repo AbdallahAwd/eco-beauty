@@ -21,7 +21,7 @@ const sidebarItems = [
   { name: "Dashboard Overview", icon: LayoutDashboard, href: "/dashbaord" },
   { name: "Products Management", icon: Package, href: "/dashbaord/products" },
   { name: "Orders & Shipping", icon: ShoppingCart, href: "/dashbaord/orders" },
-  { name: "Inventory & Stock", icon: BarChart2, href: "/dashbaord/inventory" },
+  // { name: "Inventory & Stock", icon: BarChart2, href: "/dashbaord/inventory" },
   { name: "Sales & Revenue", icon: PieChart, href: "/dashbaord/sales" },
   { name: "Customer Management", icon: Users, href: "/dashbaord/customers" },
   {

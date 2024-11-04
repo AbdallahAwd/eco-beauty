@@ -38,6 +38,7 @@ import {
   MoreHorizontal,
   AlertTriangle,
 } from "lucide-react";
+import Link from "next/link";
 
 // Mock data for products
 const products = [
@@ -125,7 +126,8 @@ export function ProductManagementComponent() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Product Management</h1>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> Add New Product
+          <Plus className="mr-2 h-4 w-4" />{" "}
+          <Link href="/dashbaord/products/add">Add New Product</Link>
         </Button>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0 md:space-x-4">
